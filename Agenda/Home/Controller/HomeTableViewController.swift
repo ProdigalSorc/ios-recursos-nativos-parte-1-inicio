@@ -15,6 +15,7 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     
     let searchController = UISearchController(searchResultsController: nil)
     var gerenciadorDeResultados: NSFetchedResultsController<Aluno>?
+    var alunoViewController:AlunoViewController?
     
     var contexto:NSManagedObjectContext {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -48,7 +49,13 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
             print(error.localizedDescription)
         }
     }
-
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editar" {
+            alunoViewController = segue.destination as? AlunoViewController
+        }
+    }
+    
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -74,6 +81,11 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let alunoSelecionado = gerenciadorDeResultados?.fetchedObjects![indexPath.row] else { return }
+        alunoViewController?.aluno = alunoSelecionado
     }
 
     // MARK: -  FetchedResultsControllerDelegate
